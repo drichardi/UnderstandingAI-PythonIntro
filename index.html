@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Launchpad | Student Resource</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Added font-variant-ligatures: none; 
+           This ensures operators like != and >= render as separate characters 
+           instead of combining into single mathematical symbols.
+        */
+        .code-font { 
+            font-family: 'Fira Code', monospace; 
+            font-variant-ligatures: none; 
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+
+        .syntax-keyword { color: #c678dd; } /* Purple */
+        .syntax-func { color: #61afef; } /* Blue */
+        .syntax-string { color: #98c379; } /* Green */
+        .syntax-comment { color: #5c6370; font-style: italic; } /* Grey */
+        .syntax-number { color: #d19a66; } /* Orange */
+        .syntax-class { color: #e5c07b; } /* Yellow */
+
+        .topic-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .topic-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .active-nav {
+            background-color: #3b82f6;
+            color: white;
+            border-left: 4px solid #1d4ed8;
+        }
+        .inactive-nav {
+            color: #94a3b8;
+            border-left: 4px solid transparent;
+        }
+        .inactive-nav:hover {
+            background-color: #1e293b;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 h-screen flex overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-slate-800 border-r border-slate-700 flex flex-col flex-shrink-0 transition-all duration-300 absolute md:relative z-20 h-full transform -translate-x-full md:translate-x-0" id="sidebar">
+        <div class="p-6 border-b border-slate-700 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i data-lucide="rocket" class="w-8 h-8 text-blue-500"></i>
+                <h1 class="font-bold text-xl tracking-tight text-white">Launchpad</h1>
+            </div>
+            <button class="md:hidden text-slate-400 hover:text-white" onclick="toggleSidebar()">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4">
+            <div class="px-4 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Day 1: Foundations</div>
+            <button onclick="loadContent('variables')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium active-nav" id="nav-variables">
+                Variables & Types
+            </button>
+            <button onclick="loadContent('operators')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium inactive-nav" id="nav-operators">
+                Operators
+            </button>
+            <button onclick="loadContent('user_input')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium inactive-nav" id="nav-user_input">
+                User Input
+            </button>
+
+            <div class="px-4 mt-6 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Day 2: Control Flow</div>
+            <button onclick="loadContent('conditionals')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium inactive-nav" id="nav-conditionals">
+                Conditionals (If/Else)
+            </button>
+            <button onclick="loadContent('error_handling')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium inactive-nav" id="nav-error_handling">
+                Error Handling
+            </button>
+            <button onclick="loadContent('loops')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium inactive-nav" id="nav-loops">
+                Loops (For & While)
+            </button>
+
+            <div class="px-4 mt-6 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Day 3: Data Structures</div>
+            <button onclick="loadContent('lists')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium inactive-nav" id="nav-lists">
+                Lists
+            </button>
+            <button onclick="loadContent('dictionaries')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium inactive-nav" id="nav-dictionaries">
+                Dictionaries
+            </button>
+
+            <div class="px-4 mt-6 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Day 4: Modular Code</div>
+            <button onclick="loadContent('functions')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium inactive-nav" id="nav-functions">
+                Functions & Scope
+            </button>
+            <button onclick="loadContent('file_io')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium inactive-nav" id="nav-file_io">
+                File I/O
+            </button>
+            <button onclick="loadContent('objects')" class="nav-item w-full text-left px-6 py-3 text-sm font-medium inactive-nav" id="nav-objects">
+                Using Objects & Libs
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-slate-700 bg-slate-800/50">
+            <div class="text-xs text-slate-500 text-center">
+                Ready for practice? Open your IDE!
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+        <!-- Mobile Header -->
+        <header class="md:hidden h-16 bg-slate-800 border-b border-slate-700 flex items-center px-4 justify-between flex-shrink-0">
+            <div class="flex items-center gap-2">
+                <i data-lucide="rocket" class="w-6 h-6 text-blue-500"></i>
+                <span class="font-bold text-lg">Python Launchpad</span>
+            </div>
+            <button class="text-slate-400 hover:text-white" onclick="toggleSidebar()">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </header>
+
+        <!-- Scrollable Content Area -->
+        <div id="content-area" class="flex-1 overflow-y-auto p-6 md:p-10 max-w-5xl mx-auto w-full">
+            <!-- Dynamic Content Injected Here -->
+        </div>
+    </main>
+
+    <!-- Content Data -->
+    <script>
+        const topics = {
+            variables: {
+                title: "Variables & Data Types",
+                icon: "box",
+                docLink: "https://www.w3schools.com/python/python_variables.asp",
+                intro: "Variables are containers for storing data values. Think of them as labeled boxes where you can keep information to use later.",
+                sections: [
+                    {
+                        title: "Creating Variables",
+                        content: "In Python, variables are created the moment you assign a value to them using the <code>=</code> sign. You don't need to declare the type beforehand.",
+                        code: `<span class="syntax-comment"># Storing a string (text)</span>
+<span class="syntax-keyword">first_name</span> = <span class="syntax-string">"Ada"</span>
+
+<span class="syntax-comment"># Storing a number (integer)</span>
+<span class="syntax-keyword">age</span> = <span class="syntax-number">25</span>
+
+<span class="syntax-comment"># Storing a decimal (float)</span>
+<span class="syntax-keyword">gpa</span> = <span class="syntax-number">3.8</span>
+
+<span class="syntax-comment"># Storing a boolean (True/False)</span>
+<span class="syntax-keyword">is_student</span> = <span class="syntax-keyword">True</span>`
+                    },
+                    {
+                        title: "Common Data Types",
+                        content: "<ul class='list-disc pl-5 space-y-2 text-slate-300'><li><strong>String (str):</strong> Text data, enclosed in quotes.</li><li><strong>Integer (int):</strong> Whole numbers without decimals.</li><li><strong>Float (float):</strong> Numbers with decimal points.</li><li><strong>Boolean (bool):</strong> Represents <code>True</code> or <code>False</code>.</li></ul>"
+                    },
+                    {
+                        title: "The f-string",
+                        content: "The easiest way to mix variables with text is using an <strong>f-string</strong>. Put an <code>f</code> before the quotes and use curly braces <code>{}</code> for variables.",
+                        code: `<span class="syntax-keyword">name</span> = <span class="syntax-string">"Lovelace"</span>
+<span class="syntax-keyword">score</span> = <span class="syntax-number">98</span>
+
+<span class="syntax-func">print</span>(<span class="syntax-string">f"Player <span class="text-white">{name}</span> has score: <span class="text-white">{score}</span>"</span>)
+<span class="syntax-comment"># Output: Player Lovelace has score: 98</span>`
+                    }
+                ],
+                practice: [
+                    "Create a variable called <code>movie</code> with your favorite movie title.",
+                    "Create a variable called <code>year</code> with the year it came out.",
+                    "Use an f-string to print: 'My favorite movie is [movie] released in [year]'."
+                ]
+            },
+            operators: {
+                title: "Operators",
+                icon: "calculator",
+                docLink: "https://www.w3schools.com/python/python_operators.asp",
+                intro: "Operators allow us to perform operations on variables and values. Python supports arithmetic, comparison, and logical operators.",
+                sections: [
+                    {
+                        title: "Arithmetic Operators",
+                        content: "Used for performing math.",
+                        code: `<span class="syntax-keyword">x</span> = <span class="syntax-number">10</span>
+<span class="syntax-keyword">y</span> = <span class="syntax-number">3</span>
+
+<span class="syntax-func">print</span>(<span class="syntax-keyword">x</span> + <span class="syntax-keyword">y</span>)  <span class="syntax-comment"># Addition (13)</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">x</span> - <span class="syntax-keyword">y</span>)  <span class="syntax-comment"># Subtraction (7)</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">x</span> * <span class="syntax-keyword">y</span>)  <span class="syntax-comment"># Multiplication (30)</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">x</span> / <span class="syntax-keyword">y</span>)  <span class="syntax-comment"># Division (3.333...)</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">x</span> // <span class="syntax-keyword">y</span>) <span class="syntax-comment"># Floor Division (3 - chops off decimal)</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">x</span> % <span class="syntax-keyword">y</span>)  <span class="syntax-comment"># Modulus (1 - remainder)</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">x</span> ** <span class="syntax-keyword">y</span>) <span class="syntax-comment"># Exponent (10 to power of 3)</span>`
+                    },
+                    {
+                        title: "Comparison Operators",
+                        content: "Used to compare two values. They always return a Boolean (<code>True</code> or <code>False</code>).",
+                        code: `<span class="syntax-keyword">a</span> = <span class="syntax-number">5</span>
+<span class="syntax-keyword">b</span> = <span class="syntax-number">10</span>
+
+<span class="syntax-keyword">a</span> == <span class="syntax-keyword">b</span>   <span class="syntax-comment"># False (Equal to)</span>
+<span class="syntax-keyword">a</span> != <span class="syntax-keyword">b</span>   <span class="syntax-comment"># True (Not equal to)</span>
+<span class="syntax-keyword">a</span> > <span class="syntax-keyword">b</span>    <span class="syntax-comment"># False (Greater than)</span>
+<span class="syntax-keyword">a</span> < <span class="syntax-keyword">b</span>    <span class="syntax-comment"># True (Less than)</span>`
+                    }
+                ],
+                practice: [
+                    "Calculate how many seconds are in a year (60 * 60 * 24 * 365) and store it in a variable.",
+                    "Use the modulus operator <code>%</code> to determine if the number 25 is even or odd (hint: <code>25 % 2</code>).",
+                    "Compare if <code>10 ** 2</code> is greater than <code>105</code>."
+                ]
+            },
+            user_input: {
+                title: "User Input",
+                icon: "keyboard",
+                docLink: "https://www.w3schools.com/python/python_user_input.asp",
+                intro: "So far we've hard-coded values. Now, let's ask the user to type something in! This makes programs interactive.",
+                sections: [
+                    {
+                        title: "The input() Function",
+                        content: "The <code>input()</code> function pauses the program and waits for the user to type. It <strong>always</strong> returns a String (text).",
+                        code: `<span class="syntax-keyword">name</span> = <span class="syntax-func">input</span>(<span class="syntax-string">"What is your name? "</span>)
+<span class="syntax-func">print</span>(<span class="syntax-string">f"Nice to meet you, <span class="text-white">{name}</span>!"</span>)`
+                    },
+                    {
+                        title: "Converting Types (Casting)",
+                        content: "Since input is always text, if you want to do math, you must convert (cast) it to an integer or float first.",
+                        code: `<span class="syntax-comment"># This would crash without int() if we did math later</span>
+<span class="syntax-keyword">age_text</span> = <span class="syntax-func">input</span>(<span class="syntax-string">"Enter your age: "</span>)
+<span class="syntax-keyword">age</span> = <span class="syntax-func">int</span>(<span class="syntax-keyword">age_text</span>)
+
+<span class="syntax-func">print</span>(<span class="syntax-string">f"Next year you will be <span class="text-white">{age + 1}</span>"</span>)
+
+<span class="syntax-comment"># Or do it in one line:</span>
+<span class="syntax-keyword">price</span> = <span class="syntax-func">float</span>(<span class="syntax-func">input</span>(<span class="syntax-string">"Enter price: "</span>))`
+                    }
+                ],
+                practice: [
+                    "Write a program that asks for the user's name and favorite color, then prints a sentence using both.",
+                    "Make a 'Dog Year Calculator': Ask for the dog's age in human years, multiply it by 7, and print the result."
+                ]
+            },
+            conditionals: {
+                title: "Conditionals",
+                icon: "split",
+                docLink: "https://www.w3schools.com/python/python_conditions.asp",
+                intro: "Conditionals allow your program to make decisions. Code inside an `if` block only runs if a specific condition is met.",
+                sections: [
+                    {
+                        title: "The if, elif, else Structure",
+                        content: "Python uses <strong>indentation</strong> (whitespace) to define blocks of code.",
+                        code: `<span class="syntax-keyword">grade</span> = <span class="syntax-number">85</span>
+
+<span class="syntax-keyword">if</span> <span class="syntax-keyword">grade</span> >= <span class="syntax-number">90</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"A"</span>)
+<span class="syntax-keyword">elif</span> <span class="syntax-keyword">grade</span> >= <span class="syntax-number">80</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"B"</span>)  <span class="syntax-comment"># This runs</span>
+<span class="syntax-keyword">elif</span> <span class="syntax-keyword">grade</span> >= <span class="syntax-number">70</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"C"</span>)
+<span class="syntax-keyword">else</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"Study more!"</span>)`
+                    },
+                    {
+                        title: "Logical Operators",
+                        content: "Combine multiple conditions using <code>and</code>, <code>or</code>, and <code>not</code>.",
+                        code: `<span class="syntax-keyword">weather</span> = <span class="syntax-string">"sunny"</span>
+<span class="syntax-keyword">temp</span> = <span class="syntax-number">75</span>
+
+<span class="syntax-comment"># Both must be True</span>
+<span class="syntax-keyword">if</span> <span class="syntax-keyword">weather</span> == <span class="syntax-string">"sunny"</span> <span class="syntax-keyword">and</span> <span class="syntax-keyword">temp</span> > <span class="syntax-number">60</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"Go to the beach!"</span>)
+
+<span class="syntax-comment"># Only one needs to be True</span>
+<span class="syntax-keyword">if</span> <span class="syntax-keyword">weather</span> == <span class="syntax-string">"rainy"</span> <span class="syntax-keyword">or</span> <span class="syntax-keyword">temp</span> < <span class="syntax-number">40</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"Stay inside."</span>)`
+                    }
+                ],
+                practice: [
+                    "Write a program that checks a variable <code>age</code>. If age is under 13 print 'Child', if 13-19 print 'Teen', else 'Adult'.",
+                    "Create a 'Password Checker' that checks if user input equals 'secret123'."
+                ]
+            },
+            error_handling: {
+                title: "Error Handling",
+                icon: "shield-alert",
+                docLink: "https://www.w3schools.com/python/python_try_except.asp",
+                intro: "Programs crash when users input unexpected data (like typing 'five' instead of '5'). Error handling keeps your code running safely.",
+                sections: [
+                    {
+                        title: "Try and Except",
+                        content: "Put risky code inside <code>try</code>. If it fails, the code inside <code>except</code> runs instead of crashing.",
+                        code: `<span class="syntax-keyword">try</span>:
+    <span class="syntax-keyword">age</span> = <span class="syntax-func">int</span>(<span class="syntax-func">input</span>(<span class="syntax-string">"Enter your age: "</span>))
+    <span class="syntax-func">print</span>(<span class="syntax-string">f"You are <span class="text-white">{age}</span> years old."</span>)
+<span class="syntax-keyword">except</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"Please type a number, not text!"</span>)`
+                    },
+                    {
+                        title: "Catching Specific Errors",
+                        content: "It is better to catch specific errors so you know exactly what went wrong.",
+                        code: `<span class="syntax-keyword">try</span>:
+    <span class="syntax-keyword">num</span> = <span class="syntax-number">10</span> / <span class="syntax-number">0</span>
+<span class="syntax-keyword">except</span> <span class="syntax-class">ZeroDivisionError</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"You can't divide by zero!"</span>)
+<span class="syntax-keyword">except</span> <span class="syntax-class">ValueError</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"Invalid value entered."</span>)`
+                    }
+                ],
+                practice: [
+                    "Update your Dog Year Calculator to use try/except. If the user types 'seven', print 'Please enter a number'.",
+                    "Write a divider program that takes two inputs and divides them, handling the 'ZeroDivisionError'."
+                ]
+            },
+            loops: {
+                title: "Loops",
+                icon: "repeat",
+                docLink: "https://www.w3schools.com/python/python_for_loops.asp",
+                intro: "Loops allow you to repeat a block of code multiple times. This is essential for processing lists of data or repeating actions until a condition changes.",
+                sections: [
+                    {
+                        title: "The For Loop",
+                        content: "Best for iterating over a sequence (like a list or a range of numbers).",
+                        code: `<span class="syntax-comment"># Using range(start, stop)</span>
+<span class="syntax-comment"># Prints 0, 1, 2, 3, 4</span>
+<span class="syntax-keyword">for</span> <span class="syntax-keyword">i</span> <span class="syntax-keyword">in</span> <span class="syntax-func">range</span>(<span class="syntax-number">5</span>):
+    <span class="syntax-func">print</span>(<span class="syntax-keyword">i</span>)
+
+<span class="syntax-comment"># Loop through text</span>
+<span class="syntax-keyword">for</span> <span class="syntax-keyword">char</span> <span class="syntax-keyword">in</span> <span class="syntax-string">"Python"</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-keyword">char</span>)`
+                    },
+                    {
+                        title: "The While Loop",
+                        content: "Repeats as long as a condition is true. <strong>Caution:</strong> Make sure the condition eventually becomes false to avoid infinite loops!",
+                        code: `<span class="syntax-keyword">count</span> = <span class="syntax-number">5</span>
+
+<span class="syntax-keyword">while</span> <span class="syntax-keyword">count</span> > <span class="syntax-number">0</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-keyword">count</span>)
+    <span class="syntax-keyword">count</span> = <span class="syntax-keyword">count</span> - <span class="syntax-number">1</span>
+    
+<span class="syntax-func">print</span>(<span class="syntax-string">"Blast off!"</span>)`
+                    }
+                ],
+                practice: [
+                    "Use a for loop to print all even numbers from 0 to 20.",
+                    "Write a loop that calculates the sum of numbers from 1 to 10."
+                ]
+            },
+            lists: {
+                title: "Lists",
+                icon: "list",
+                docLink: "https://www.w3schools.com/python/python_lists.asp",
+                intro: "A list is an ordered collection of items. It allows you to store multiple values in a single variable.",
+                sections: [
+                    {
+                        title: "Creating & Accessing",
+                        content: "Lists use square brackets <code>[]</code>. Items are accessed by their index, starting at 0.",
+                        code: `<span class="syntax-keyword">fruits</span> = [<span class="syntax-string">"apple"</span>, <span class="syntax-string">"banana"</span>, <span class="syntax-string">"cherry"</span>]
+
+<span class="syntax-func">print</span>(<span class="syntax-keyword">fruits</span>[<span class="syntax-number">0</span>])  <span class="syntax-comment"># apple</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">fruits</span>[-<span class="syntax-number">1</span>]) <span class="syntax-comment"># cherry (last item)</span>`
+                    },
+                    {
+                        title: "Modifying Lists",
+                        content: "You can add, remove, or change items in a list.",
+                        code: `<span class="syntax-keyword">colors</span> = []
+
+<span class="syntax-comment"># Adding items</span>
+<span class="syntax-keyword">colors</span>.<span class="syntax-func">append</span>(<span class="syntax-string">"red"</span>)
+<span class="syntax-keyword">colors</span>.<span class="syntax-func">append</span>(<span class="syntax-string">"blue"</span>)
+
+<span class="syntax-comment"># Changing an item</span>
+<span class="syntax-keyword">colors</span>[<span class="syntax-number">0</span>] = <span class="syntax-string">"green"</span>
+
+<span class="syntax-comment"># Removing an item</span>
+<span class="syntax-keyword">colors</span>.<span class="syntax-func">pop</span>() <span class="syntax-comment"># Removes the last item</span>`
+                    },
+                    {
+                        title: "Looping through Lists",
+                        content: "Python makes it easy to go through items one by one. This is called 'iterating'. The temporary variable (like <code>hero</code> below) holds one item at a time.",
+                        code: `<span class="syntax-keyword">heroes</span> = [<span class="syntax-string">"Batman"</span>, <span class="syntax-string">"Superman"</span>, <span class="syntax-string">"Wonder Woman"</span>]
+
+<span class="syntax-keyword">for</span> <span class="syntax-keyword">hero</span> <span class="syntax-keyword">in</span> <span class="syntax-keyword">heroes</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">f"I am <span class="text-white">{hero}</span>"</span>)`
+                    }
+                ],
+                practice: [
+                    "Create a list of 5 of your favorite foods.",
+                    "Use a loop to print each food in uppercase (use <code>.upper()</code>).",
+                    "Add a new food to the list using <code>.append()</code>."
+                ]
+            },
+            dictionaries: {
+                title: "Dictionaries",
+                icon: "book",
+                docLink: "https://www.w3schools.com/python/python_dictionaries.asp",
+                intro: "Dictionaries store data in <code>key: value</code> pairs. They are great for storing structured data representing a real-world object.",
+                sections: [
+                    {
+                        title: "Creating Dictionaries",
+                        content: "Use curly braces <code>{}</code>.",
+                        code: `<span class="syntax-keyword">student</span> = {
+    <span class="syntax-string">"name"</span>: <span class="syntax-string">"Kai"</span>,
+    <span class="syntax-string">"age"</span>: <span class="syntax-number">16</span>,
+    <span class="syntax-string">"skills"</span>: [<span class="syntax-string">"Python"</span>, <span class="syntax-string">"HTML"</span>]
+}
+
+<span class="syntax-comment"># Accessing data</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">student</span>[<span class="syntax-string">"name"</span>]) <span class="syntax-comment"># Kai</span>`
+                    },
+                    {
+                        title: "Modifying Dictionaries",
+                        content: "You can add a new key-value pair by assigning a value to a new key. If the key already exists, the value gets updated.",
+                        code: `<span class="syntax-comment"># Adding a new key-value pair</span>
+<span class="syntax-keyword">student</span>[<span class="syntax-string">"grade"</span>] = <span class="syntax-string">"10th"</span>
+
+<span class="syntax-comment"># Updating a value</span>
+<span class="syntax-keyword">student</span>[<span class="syntax-string">"age"</span>] = <span class="syntax-number">17</span>`
+                    }
+                ],
+                practice: [
+                    "Create a dictionary representing a 'Car' with keys for 'make', 'model', and 'year'.",
+                    "Print out a sentence using the car's model and year.",
+                    "Add a 'color' key to the dictionary."
+                ]
+            },
+            functions: {
+                title: "Functions & Scope",
+                icon: "code",
+                docLink: "https://www.w3schools.com/python/python_functions.asp",
+                intro: "Functions are reusable blocks of code. Instead of writing the same code twice, you write a function once and 'call' it whenever you need it.",
+                sections: [
+                    {
+                        title: "Defining & Calling",
+                        content: "Use the <code>def</code> keyword.",
+                        code: `<span class="syntax-keyword">def</span> <span class="syntax-func">greet</span>():
+    <span class="syntax-func">print</span>(<span class="syntax-string">"Hello World!"</span>)
+
+<span class="syntax-comment"># Using the function</span>
+<span class="syntax-func">greet</span>()
+<span class="syntax-func">greet</span>()`
+                    },
+                    {
+                        title: "Parameters & Arguments",
+                        content: "Pass data into functions to make them dynamic.",
+                        code: `<span class="syntax-keyword">def</span> <span class="syntax-func">greet_person</span>(<span class="syntax-keyword">name</span>):
+    <span class="syntax-func">print</span>(<span class="syntax-string">f"Hello, <span class="text-white">{name}</span>!"</span>)
+
+<span class="syntax-func">greet_person</span>(<span class="syntax-string">"Sarah"</span>)
+<span class="syntax-func">greet_person</span>(<span class="syntax-string">"Mike"</span>)`
+                    },
+                    {
+                        title: "Return Values",
+                        content: "Functions can send data back to where they were called.",
+                        code: `<span class="syntax-keyword">def</span> <span class="syntax-func">add</span>(<span class="syntax-keyword">a</span>, <span class="syntax-keyword">b</span>):
+    <span class="syntax-keyword">return</span> <span class="syntax-keyword">a</span> + <span class="syntax-keyword">b</span>
+
+<span class="syntax-keyword">result</span> = <span class="syntax-func">add</span>(<span class="syntax-number">5</span>, <span class="syntax-number">3</span>)
+<span class="syntax-func">print</span>(<span class="syntax-keyword">result</span>) <span class="syntax-comment"># 8</span>`
+                    },
+                    {
+                        title: "Variable Scope",
+                        content: "Variables created inside a function are <strong>Local</strong> (they die when the function ends). Variables created outside are <strong>Global</strong>.",
+                        code: `<span class="syntax-keyword">score</span> = <span class="syntax-number">10</span> <span class="syntax-comment"># Global</span>
+
+<span class="syntax-keyword">def</span> <span class="syntax-func">my_func</span>():
+    <span class="syntax-keyword">score</span> = <span class="syntax-number">5</span> <span class="syntax-comment"># Local (a new temporary variable)</span>
+    <span class="syntax-func">print</span>(<span class="syntax-keyword">score</span>) <span class="syntax-comment"># Prints 5</span>
+
+<span class="syntax-func">my_func</span>()
+<span class="syntax-func">print</span>(<span class="syntax-keyword">score</span>) <span class="syntax-comment"># Prints 10 (The global variable was untouched)</span>`
+                    }
+                ],
+                practice: [
+                    "Write a function called <code>square(number)</code> that returns the number multiplied by itself.",
+                    "Write a function <code>check_password(input)</code> that returns True if the input matches 'secret', else False."
+                ]
+            },
+            file_io: {
+                title: "File Handling (I/O)",
+                icon: "file-text",
+                docLink: "https://www.w3schools.com/python/python_file_open.asp",
+                intro: "So far, all our data disappears when the program ends. File Handling allows us to save (write) data to files and open (read) them later.",
+                sections: [
+                    {
+                        title: "Reading Files",
+                        content: "The best way to open a file is using the <code>with open()</code> statement. It automatically closes the file for you, preventing errors.",
+                        code: `<span class="syntax-comment"># 'r' stands for Read mode</span>
+<span class="syntax-keyword">with</span> <span class="syntax-func">open</span>(<span class="syntax-string">"notes.txt"</span>, <span class="syntax-string">"r"</span>) <span class="syntax-keyword">as</span> <span class="syntax-keyword">file</span>:
+    <span class="syntax-keyword">content</span> = <span class="syntax-keyword">file</span>.<span class="syntax-func">read</span>()
+    <span class="syntax-func">print</span>(<span class="syntax-keyword">content</span>)`
+                    },
+                    {
+                        title: "Writing to Files",
+                        content: "Use <code>'w'</code> to write (overwrites existing content) or <code>'a'</code> to append (add to the end).",
+                        code: `<span class="syntax-comment"># 'w' creates a new file or clears an old one</span>
+<span class="syntax-keyword">with</span> <span class="syntax-func">open</span>(<span class="syntax-string">"diary.txt"</span>, <span class="syntax-string">"w"</span>) <span class="syntax-keyword">as</span> <span class="syntax-keyword">f</span>:
+    <span class="syntax-keyword">f</span>.<span class="syntax-func">write</span>(<span class="syntax-string">"Day 1: Learned Python today.\\n"</span>)
+
+<span class="syntax-comment"># 'a' adds to the end</span>
+<span class="syntax-keyword">with</span> <span class="syntax-func">open</span>(<span class="syntax-string">"diary.txt"</span>, <span class="syntax-string">"a"</span>) <span class="syntax-keyword">as</span> <span class="syntax-keyword">f</span>:
+    <span class="syntax-keyword">f</span>.<span class="syntax-func">write</span>(<span class="syntax-string">"Day 2: Learned File I/O!"</span>)`
+                    }
+                ],
+                practice: [
+                    "Create a program that asks the user for their name and writes it to a file called <code>names.txt</code>.",
+                    "Write a loop that reads <code>names.txt</code> and prints 'Hello [name]' for every line in the file."
+                ]
+            },
+            objects: {
+                title: "Objects & Libraries",
+                icon: "package",
+                docLink: "https://www.w3schools.com/python/python_modules.asp",
+                intro: "Python is battery-included! You can use 'Libraries' (Modules) to add extra powers, and almost everything in Python is an 'Object' with built-in tools (methods).",
+                sections: [
+                    {
+                        title: "Using Libraries (Modules)",
+                        content: "Use <code>import</code> to access code written by others.",
+                        code: `<span class="syntax-keyword">import</span> <span class="syntax-class">random</span>
+<span class="syntax-keyword">import</span> <span class="syntax-class">math</span>
+
+<span class="syntax-comment"># Generate random number between 1 and 10</span>
+<span class="syntax-keyword">roll</span> = <span class="syntax-class">random</span>.<span class="syntax-func">randint</span>(<span class="syntax-number">1</span>, <span class="syntax-number">10</span>)
+
+<span class="syntax-comment"># Calculate square root</span>
+<span class="syntax-keyword">root</span> = <span class="syntax-class">math</span>.<span class="syntax-func">sqrt</span>(<span class="syntax-number">16</span>)`
+                    },
+                    {
+                        title: "Using Object Methods",
+                        content: "Strings and Lists are objects. They have built-in functions called 'methods' attached to them with a dot <code>.</code>.",
+                        code: `<span class="syntax-keyword">text</span> = <span class="syntax-string">"  python is fun  "</span>
+
+<span class="syntax-comment"># String methods</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">text</span>.<span class="syntax-func">upper</span>())      <span class="syntax-comment"># "  PYTHON IS FUN  "</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">text</span>.<span class="syntax-func">strip</span>())      <span class="syntax-comment"># "python is fun"</span> (removes spaces)
+<span class="syntax-func">print</span>(<span class="syntax-keyword">text</span>.<span class="syntax-func">replace</span>(<span class="syntax-string">"fun"</span>, <span class="syntax-string">"cool"</span>))
+
+<span class="syntax-comment"># List methods</span>
+<span class="syntax-keyword">nums</span> = [<span class="syntax-number">3</span>, <span class="syntax-number">1</span>, <span class="syntax-number">4</span>, <span class="syntax-number">2</span>]
+<span class="syntax-keyword">nums</span>.<span class="syntax-func">sort</span>()
+<span class="syntax-func">print</span>(<span class="syntax-keyword">nums</span>) <span class="syntax-comment"># [1, 2, 3, 4]</span>`
+                    }
+                ],
+                practice: [
+                    "Import the <code>random</code> library and create a 'Coin Flip' program that prints 'Heads' or 'Tails'.",
+                    "Create a string with messy casing like 'HeLLo WoRLd' and use <code>.lower()</code> to fix it."
+                ]
+            }
+        };
+
+        function loadContent(topicId) {
+            const data = topics[topicId];
+            const container = document.getElementById('content-area');
+            
+            // Update Navigation Styles
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active-nav');
+                el.classList.add('inactive-nav');
+            });
+            document.getElementById(`nav-${topicId}`).classList.add('active-nav');
+            document.getElementById(`nav-${topicId}`).classList.remove('inactive-nav');
+
+            // Close sidebar on mobile after selection
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+            }
+
+            // Build Content
+            let sectionsHtml = data.sections.map(section => `
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-white mb-3">${section.title}</h3>
+                    <div class="text-slate-300 mb-4 leading-relaxed">${section.content}</div>
+                    ${section.code ? `
+                    <div class="bg-slate-950 rounded-lg p-4 border border-slate-700 shadow-lg overflow-x-auto group relative">
+                        <div class="absolute right-4 top-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="text-xs text-slate-500 font-mono">python</span>
+                        </div>
+                        <pre class="code-font text-sm whitespace-pre text-slate-200">${section.code}</pre>
+                    </div>` : ''}
+                </div>
+            `).join('');
+
+            let practiceHtml = `
+                <div class="mt-10 bg-indigo-900/30 border border-indigo-500/30 rounded-xl p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i data-lucide="terminal" class="w-5 h-5 text-indigo-400"></i>
+                        <h3 class="text-lg font-bold text-white">Practice Problems</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        ${data.practice.map(item => `
+                            <li class="flex gap-3 text-indigo-100">
+                                <span class="text-indigo-500 font-bold">•</span>
+                                <span>${item}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+
+            container.innerHTML = `
+                <div class="animate-fade-in pb-16">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-blue-600 rounded-lg text-white">
+                                <i data-lucide="${data.icon}" class="w-6 h-6"></i>
+                            </div>
+                            <h2 class="text-3xl md:text-4xl font-bold text-white">${data.title}</h2>
+                        </div>
+                        <a href="${data.docLink}" target="_blank" class="self-start md:self-center flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors border border-blue-500/30 rounded-full px-4 py-2 hover:bg-blue-500/10">
+                            <span>Read Docs</span>
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                    <p class="text-lg text-slate-400 mb-10 border-b border-slate-800 pb-8">${data.intro}</p>
+                    ${sectionsHtml}
+                    ${practiceHtml}
+                </div>
+            `;
+            
+            lucide.createIcons();
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Initialize with first topic
+        loadContent('variables');
+
+    </script>
+</body>
+</html>
