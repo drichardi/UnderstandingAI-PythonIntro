@@ -176,6 +176,15 @@
                         content: "<ul class='list-disc pl-5 space-y-2 text-slate-300'><li><strong>String (str):</strong> Text data, enclosed in quotes.</li><li><strong>Integer (int):</strong> Whole numbers without decimals.</li><li><strong>Float (float):</strong> Numbers with decimal points.</li><li><strong>Boolean (bool):</strong> Represents <code>True</code> or <code>False</code>.</li></ul>"
                     },
                     {
+                        title: "Checking Types",
+                        content: "Not sure what type a variable is? Use the <code>type()</code> function to find out. This is very helpful for debugging.",
+                        code: `<span class="syntax-keyword">x</span> = <span class="syntax-number">5</span>
+<span class="syntax-keyword">y</span> = <span class="syntax-string">"5"</span>
+
+<span class="syntax-func">print</span>(<span class="syntax-func">type</span>(<span class="syntax-keyword">x</span>)) <span class="syntax-comment"># &lt;class 'int'&gt;</span>
+<span class="syntax-func">print</span>(<span class="syntax-func">type</span>(<span class="syntax-keyword">y</span>)) <span class="syntax-comment"># &lt;class 'str'&gt;</span>`
+                    },
+                    {
                         title: "The f-string",
                         content: "The easiest way to mix variables with text is using an <strong>f-string</strong>. Put an <code>f</code> before the quotes and use curly braces <code>{}</code> for variables.",
                         code: `<span class="syntax-keyword">name</span> = <span class="syntax-string">"Lovelace"</span>
@@ -358,6 +367,15 @@
     <span class="syntax-keyword">count</span> = <span class="syntax-keyword">count</span> - <span class="syntax-number">1</span>
     
 <span class="syntax-func">print</span>(<span class="syntax-string">"Blast off!"</span>)`
+                    },
+                    {
+                        title: "Pythonic Tip: enumerate()",
+                        content: "Need the index <em>and</em> the value? Don't use <code>range(len())</code>. Use <code>enumerate()</code> to get both cleanly.",
+                        code: `<span class="syntax-keyword">racers</span> = [<span class="syntax-string">"Mario"</span>, <span class="syntax-string">"Luigi"</span>, <span class="syntax-string">"Peach"</span>]
+
+<span class="syntax-comment"># Gives you (0, "Mario"), (1, "Luigi"), etc.</span>
+<span class="syntax-keyword">for</span> <span class="syntax-keyword">index</span>, <span class="syntax-keyword">racer</span> <span class="syntax-keyword">in</span> <span class="syntax-func">enumerate</span>(<span class="syntax-keyword">racers</span>):
+    <span class="syntax-func">print</span>(<span class="syntax-string">f"Rank <span class="text-white">{index + 1}</span>: <span class="text-white">{racer}</span>"</span>)`
                     }
                 ],
                 practice: [
@@ -380,6 +398,15 @@
 <span class="syntax-func">print</span>(<span class="syntax-keyword">fruits</span>[-<span class="syntax-number">1</span>]) <span class="syntax-comment"># cherry (last item)</span>`
                     },
                     {
+                        title: "Slicing (Subsets)",
+                        content: "You can grab a chunk of items using a colon <code>:</code>. This is called 'slicing'. <strong>Note:</strong> This syntax works exactly the same way on <strong>Strings</strong> to grab parts of text!",
+                        code: `<span class="syntax-keyword">nums</span> = [<span class="syntax-number">0</span>, <span class="syntax-number">1</span>, <span class="syntax-number">2</span>, <span class="syntax-number">3</span>, <span class="syntax-number">4</span>, <span class="syntax-number">5</span>]
+
+<span class="syntax-func">print</span>(<span class="syntax-keyword">nums</span>[<span class="syntax-number">1</span>:<span class="syntax-number">4</span>]) <span class="syntax-comment"># [1, 2, 3] (Start at 1, stop BEFORE 4)</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">nums</span>[:<span class="syntax-number">3</span>])  <span class="syntax-comment"># [0, 1, 2] (From start to index 3)</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">nums</span>[-<span class="syntax-number">2</span>:]) <span class="syntax-comment"># [4, 5] (Last 2 items)</span>`
+                    },
+                    {
                         title: "Modifying Lists",
                         content: "You can add, remove, or change items in a list.",
                         code: `<span class="syntax-keyword">colors</span> = []
@@ -395,12 +422,33 @@
 <span class="syntax-keyword">colors</span>.<span class="syntax-func">pop</span>() <span class="syntax-comment"># Removes the last item</span>`
                     },
                     {
+                        title: "Useful Built-in Functions",
+                        content: "Python has helpful functions that work on lists (and strings!) without needing to import anything.",
+                        code: `<span class="syntax-keyword">scores</span> = [<span class="syntax-number">80</span>, <span class="syntax-number">95</span>, <span class="syntax-number">70</span>]
+
+<span class="syntax-func">print</span>(<span class="syntax-func">len</span>(<span class="syntax-keyword">scores</span>)) <span class="syntax-comment"># 3 (Length: Number of items)</span>
+<span class="syntax-func">print</span>(<span class="syntax-func">max</span>(<span class="syntax-keyword">scores</span>)) <span class="syntax-comment"># 95 (Highest item)</span>
+<span class="syntax-func">print</span>(<span class="syntax-func">min</span>(<span class="syntax-keyword">scores</span>)) <span class="syntax-comment"># 70 (Lowest item)</span>
+<span class="syntax-func">print</span>(<span class="syntax-func">sum</span>(<span class="syntax-keyword">scores</span>)) <span class="syntax-comment"># 245 (Total)</span>`
+                    },
+                    {
                         title: "Looping through Lists",
                         content: "Python makes it easy to go through items one by one. This is called 'iterating'. The temporary variable (like <code>hero</code> below) holds one item at a time.",
                         code: `<span class="syntax-keyword">heroes</span> = [<span class="syntax-string">"Batman"</span>, <span class="syntax-string">"Superman"</span>, <span class="syntax-string">"Wonder Woman"</span>]
 
 <span class="syntax-keyword">for</span> <span class="syntax-keyword">hero</span> <span class="syntax-keyword">in</span> <span class="syntax-keyword">heroes</span>:
     <span class="syntax-func">print</span>(<span class="syntax-string">f"I am <span class="text-white">{hero}</span>"</span>)`
+                    },
+                    {
+                        title: "Pythonic Tip: The 'in' Keyword",
+                        content: "Need to check if something is in the list? Don't write a loop to look for it! Just use <code>in</code>.",
+                        code: `<span class="syntax-keyword">menu</span> = [<span class="syntax-string">"pizza"</span>, <span class="syntax-string">"taco"</span>, <span class="syntax-string">"sushi"</span>]
+
+<span class="syntax-keyword">if</span> <span class="syntax-string">"taco"</span> <span class="syntax-keyword">in</span> <span class="syntax-keyword">menu</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"We have tacos!"</span>)
+    
+<span class="syntax-keyword">if</span> <span class="syntax-string">"burger"</span> <span class="syntax-keyword">not in</span> <span class="syntax-keyword">menu</span>:
+    <span class="syntax-func">print</span>(<span class="syntax-string">"No burgers today."</span>)`
                     }
                 ],
                 practice: [
@@ -435,6 +483,17 @@
 
 <span class="syntax-comment"># Updating a value</span>
 <span class="syntax-keyword">student</span>[<span class="syntax-string">"age"</span>] = <span class="syntax-number">17</span>`
+                    },
+                    {
+                        title: "Pythonic Tip: The .get() Method",
+                        content: "Accessing a key that doesn't exist usually crashes your app. Use <code>.get()</code> to safely try getting a value.",
+                        code: `<span class="syntax-keyword">scores</span> = {<span class="syntax-string">"Alice"</span>: <span class="syntax-number">10</span>, <span class="syntax-string">"Bob"</span>: <span class="syntax-number">8</span>}
+
+<span class="syntax-comment"># Safe way - returns None if missing</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">scores</span>.<span class="syntax-func">get</span>(<span class="syntax-string">"Charlie"</span>)) 
+
+<span class="syntax-comment"># Or provide a default value (0)</span>
+<span class="syntax-func">print</span>(<span class="syntax-keyword">scores</span>.<span class="syntax-func">get</span>(<span class="syntax-string">"Charlie"</span>, <span class="syntax-number">0</span>))`
                     }
                 ],
                 practice: [
